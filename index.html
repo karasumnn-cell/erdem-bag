@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAREER.MN | Ирээдүйн хөтөч</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #6366f1; --primary-dark: #4338ca; --accent: #facc15; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%); color: #1e293b; scroll-behavior: smooth; overflow-x: hidden; }
+        
+        #introGateOverlay { position: fixed; inset: 0; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .glass-header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(30px); border-bottom: 2px solid rgba(99, 102, 241, 0.1); box-shadow: 0 8px 32px rgba(99, 102, 241, 0.08); }
+        .logo-wrapper { animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .hero-bg { 
+            background: linear-gradient(135deg, rgba(99,102,241,0.6) 0%, rgba(67,56,202,0.6) 100%), url('https://i.ibb.co/pBb8RKct/image.jpg'); 
+            background-size: cover; background-position: center; 
+            min-height: 420px; display: flex; align-items: center; 
+            border-radius: 30px; box-shadow: 0 30px 80px rgba(99, 102, 241, 0.25);
+            position: relative; overflow: hidden; margin: 1rem; padding: 2rem; 
+        }
+        
+        .nav-link { white-space: nowrap; transition: all 0.3s; padding: 10px 16px; border-radius: 12px; font-size: 11px; cursor: pointer; }
+        .nav-link:hover { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
+        .nav-link-active { background: #6366f1; color: white !important; }
+        
+        .mobile-nav-scroll { display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .mobile-nav-scroll::-webkit-scrollbar { display: none; }
+
+        .card-light { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border: 1px solid rgba(99, 102, 241, 0.15); transition: all 0.4s; border-radius: 24px; }
+        .card-light:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15); border-color: #6366f1; }
+
+        .btn-main { background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); color: white; transition: all 0.3s; cursor: pointer; border: none; box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25); }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(99, 102, 241, 0.35); }
+
+        .option-btn { width: 100%; padding: 1.2rem; background: white; border: 2px solid #f1f5f9; border-radius: 1.5rem; text-align: left; font-weight: 700; transition: all 0.2s; color: #1e293b; }
+        .option-btn:hover { border-color: #6366f1; background: #f0f4ff; transform: translateX(4px); }
+
+        .page { display: none; }
+        .page-active { display: block; animation: pageIn 0.4s ease-out; }
+        @keyframes pageIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        #modalOverlay { display: none; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .accordion-content.open { max-height: 2000px; }
+
+        /* Loading Bar Animation from User Input */
+        .spinner-custom { width: 180px; height: 8px; background: rgba(99, 102, 241, 0.1); border-radius: 30px; position: relative; overflow: hidden; }
+        .spinner-custom::after { content: ""; display: block; width: 40%; height: 100%; background: #6366f1; border-radius: 30px; position: absolute; left: 0; top: 0; animation: loadingBar 1.2s infinite ease-in-out; }
+        @keyframes loadingBar { 0% { left: -40%; } 50% { left: 40%; width: 60%; } 100% { left: 100%; } }
+        .advice-card-custom { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px; text-align: left; }
+    </style>
+</head>
+<body>
+
+    <div id="introGateOverlay">
+        <div class="bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl p-8 text-center border-4 border-indigo-500 max-h-[90vh] overflow-y-auto">
+            <div id="gateContent">
+                <div class="py-8 flex flex-col items-center justify-center space-y-4">
+                    <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                    <p class="text-indigo-950 font-black text-sm uppercase tracking-wider animate-pulse">CAREER.MN систем датаг уншиж байна...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="glass-header sticky top-0 z-[100] px-4 py-3">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center mb-2">
+                <div class="logo-wrapper flex items-center space-x-3 cursor-pointer group" onclick="nav('home')">
+                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg border-2 border-indigo-100">
+                        <img src="https://i.ibb.co/9ktL00cx/image.jpg" class="w-14 h-14 object-contain rounded-xl">
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-black text-indigo-900 uppercase tracking-tighter">Career<span class="text-indigo-600">.mn</span></h1>
+                        <span class="text-[9px] uppercase tracking-widest text-indigo-500 font-extrabold block">Ирээдүйн хөтөч</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="startLocalSurvey()" id="mainSurveyStartBtn" class="btn-main px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider animate-pulse">Оношилгоо эхлэх 🎯</button>
+                </div>
+            </div>
+            
+            <nav class="mobile-nav-scroll space-x-1 py-1 font-black uppercase tracking-widest text-slate-500 border-t border-slate-50 pt-2">
+                <button id="nav-home" onclick="nav('home')" class="nav-link nav-link-active">Home</button>
+                <button id="nav-dashboard" onclick="nav('dashboard')" class="nav-link">Dashboard 📊</button>
+                <button id="nav-test" onclick="nav('test')" class="nav-link">Тест 📝</button>
+                <button id="nav-careers" onclick="nav('careers')" class="nav-link">Мэргэжил</button>
+                <button id="nav-colleges" onclick="nav('colleges')" class="nav-link">Коллеж, МСҮТ</button>
+                <button id="nav-links" onclick="nav('links')" class="nav-link">Холбоосууд</button>
+                <button id="nav-psychology" onclick="nav('psychology')" class="nav-link">Зөвлөгөө 💡</button>
+                <button id="nav-admin" onclick="nav('admin')" class="nav-link text-red-500 font-bold bg-red-50">Админ ⚙️</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 pb-20">
+        <section id="home" class="page page-active">
+            <div class="hero-bg mb-10">
+                <div class="hero-content-wrapper">
+                    <div class="inline-flex items-center bg-yellow-400 text-indigo-950 px-4 py-1.5 rounded-full mb-6 shadow-md">
+                        <span class="font-black text-[9px] uppercase tracking-widest">Баянхонгор 2026</span>
+                    </div>
+                    <h2 class="text-3xl md:text-6xl font-extrabold text-white leading-tight mb-6 italic uppercase">
+                        Маргаашийг <br><span class="text-yellow-400">Өнөөдөр</span> Сонго.
+                    </h2>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="startLocalSurvey()" class="px-8 py-4 bg-yellow-400 text-indigo-950 rounded-2xl font-black uppercase text-xs shadow-lg hover:scale-105 transition">Алхам-1: Мэргэжил оношилгоо 🎯</button>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-xl font-black text-indigo-950 uppercase italic mb-8 flex items-center">
+                <span class="w-8 h-1.5 bg-indigo-600 mr-4 rounded-full"></span> Шинэ мэдээлэл
+            </h3>
+            <div id="posts-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">Уншиж байна...</div>
+        </section>
+
+        <section id="dashboard" class="page max-w-4xl mx-auto">
+            <div class="bg-white p-8 rounded-[2.5rem] border border-indigo-100 shadow-xl mb-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 pb-6 border-b">
+                    <div>
+                        <h2 class="text-3xl font-black text-indigo-950 uppercase italic" id="dashStudentName">Бүртгэлгүй Сурагч</h2>
+                        <p class="text-slate-500 font-bold text-xs mt-1" id="dashStudentSchool">Оношилгоо хийж бүртгүүлнэ үү.</p>
+                    </div>
+                    <div class="bg-indigo-50 text-indigo-600 px-6 py-3 rounded-2xl text-center">
+                        <span class="text-xl font-black" id="dashStudentClass">-</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-6 bg-slate-50 rounded-2xl">
+                        <h4 class="font-black text-indigo-950 text-sm uppercase mb-1">Тохирсон чиглэл</h4>
+                        <p class="text-slate-600 font-bold text-xs" id="dashCareerType">Оношилгоо хигээгүй</p>
+                    </div>
+                    <div class="p-6 bg-slate-50 rounded-2xl">
+                        <h4 class="font-black text-indigo-950 text-sm uppercase mb-1">Түлхүүр хичээл</h4>
+                        <p class="text-slate-600 font-bold text-xs" id="dashSubject">-</p>
+                    </div>
+                    <div class="p-6 bg-slate-50 rounded-2xl">
+                        <h4 class="font-black text-indigo-950 text-sm uppercase mb-1">Сорилын оноо</h4>
+                        <p class="text-indigo-600 font-black text-base" id="dashTestScore">0/20 (0%)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="test" class="page max-w-5xl mx-auto">
+            <div class="bg-white p-8 rounded-[2.5rem] border shadow-xl text-center">
+                <h2 class="text-2xl font-black text-indigo-950 uppercase italic mb-8">Хичээлийн бие даасан сорил</h2>
+                <div id="subjects-button-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <p class="col-span-full text-slate-400 font-bold text-xs">Ачааллаж байна...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="careers" class="page">
+            <div class="bg-indigo-50/80 p-6 rounded-[2.5rem] mb-10 grid grid-cols-1 md:grid-cols-3 gap-4 border">
+                <input type="text" id="subjectSearch1" oninput="filterCareers()" placeholder="Хичээлээр хайх (Физик, Математик...)" class="w-full p-4 rounded-xl bg-white outline-none font-bold">
+                <input type="text" id="careerSearch" oninput="filterCareers()" placeholder="Мэргэжлээр хайх..." class="w-full p-4 rounded-xl bg-white outline-none font-bold">
+            </div>
+            <div id="careers-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">Уншиж байна...</div>
+        </section>
+
+        <section id="colleges" class="page">
+            <div id="colleges-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">Уншиж байна...</div>
+        </section>
+
+        <section id="links" class="page">
+            <div id="links-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">Уншиж байна...</div>
+        </section>
+
+        <section id="psychology" class="page max-w-4xl mx-auto">
+            <h2 class="text-2xl font-black text-indigo-950 uppercase italic mb-6 flex items-center">
+                <span class="w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs mr-3">💡</span> 
+                Мэргэжлийн чиглэл бүрийн зөвлөмжүүд
+            </h2>
+            <div id="psychology-container" class="space-y-4">Уншиж байна...</div>
+        </section>
+
+        <section id="admin" class="page max-w-2xl mx-auto">
+            <div class="bg-white p-8 rounded-[2rem] border border-red-200 shadow-xl">
+                <div class="flex items-center space-x-3 mb-6">
+                    <span class="text-2xl">⚙️</span>
+                    <h2 class="text-2xl font-black text-slate-950 uppercase italic">Админ Панель - Шинэ Пост Оруулах</h2>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-black uppercase text-slate-500 mb-2">Мэдээний Гарчиг</label>
+                        <input type="text" id="adminTitle" placeholder="Гарчиг бичих..." class="w-full p-4 bg-slate-50 rounded-xl font-bold outline-none border">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase text-slate-500 mb-2">Мэдээний Агуулга</label>
+                        <textarea id="adminContent" rows="4" placeholder="Дэлгэрэнгүй агуулга..." class="w-full p-4 bg-slate-50 rounded-xl font-bold outline-none border"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase text-slate-500 mb-2">Зураг оруулах (Компьютерээс сонгох)</label>
+                        <input type="file" id="adminImageFile" accept="image/*" class="w-full p-3 bg-slate-50 rounded-xl text-xs font-bold border">
+                    </div>
+                    <button onclick="submitNewPostFromAdmin()" id="adminSubmitBtn" class="w-full py-4 bg-red-500 hover:bg-red-600 text-white font-black rounded-xl uppercase text-xs tracking-wider transition shadow-md">Шудут Постлох 🚀</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="fixed bottom-6 right-6 z-[300]">
+        <button onclick="toggleChatbotWindow()" class="w-16 h-16 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full flex items-center justify-center shadow-2xl transition duration-300 transform hover:scale-110">
+            <span class="text-2xl">💬</span>
+        </button>
+        <div id="chatbot-window" class="hidden absolute bottom-20 right-0 w-80 md:w-96 bg-white rounded-[2rem] shadow-2xl border border-indigo-100 overflow-hidden flex flex-col h-[450px]">
+            <div class="bg-indigo-600 p-4 text-white flex justify-between items-center">
+                <div>
+                    <h4 class="font-black text-sm uppercase">Career AI Зөвлөх</h4>
+                    <span class="text-[9px] text-indigo-200">Автомат чиглүүлэгч бот</span>
+                </div>
+                <button onclick="toggleChatbotWindow()" class="text-white font-bold text-sm">✕</button>
+            </div>
+            <div id="chatbot-messages" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs font-bold text-slate-700 bg-slate-50">
+                <div class="p-3 bg-indigo-50 rounded-2xl rounded-tl-none max-w-[85%]">Сайн уу! Намайг Career AI зөвлөх гэдэг. Асуултаа бичээрэй! 👇</div>
+            </div>
+            <div class="p-3 border-t bg-white flex gap-2">
+                <input type="text" id="chatbotInput" placeholder="Асуултаа энд бичнэ үү..." class="flex-1 p-3 bg-slate-100 rounded-xl outline-none font-bold text-xs" onkeypress="if(event.key==='Enter') sendChatbotMessage()">
+                <button onclick="sendChatbotMessage()" class="px-4 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase">Илгээх</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalOverlay" class="fixed inset-0 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden relative transform scale-95 opacity-0 transition-all duration-300" id="modalContainer">
+            <button id="modalCloseBtn" onclick="closeModal()" class="absolute top-5 right-5 w-10 h-10 bg-slate-100 hover:bg-red-500 hover:text-white rounded-full flex items-center justify-center font-bold transition-all duration-200 z-10 hidden">✕</button>
+            <div id="modalContent" class="p-8 max-h-[85vh] overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwOpr5uqRJVooYGslHaYqXAflmeYlxfkDuUBKc86jLtyJtgqy9gNIe6KsVfoShv3l1mxg/exec"; 
+
+        let allCareers = [], tests = [], dynamicPosts = [], allLinks = [], allColleges = [], allPsychology = [];
+        let allData = {}, currentQuestionIndex = 0, userScores = {};
+        let activeSubjectKeyword = "Математик"; 
+        let currentStudentSchool = "Бүртгэлгүй", currentStudentClass = "-";
+        let detectedCareerTitle = "Тодорхойлогдоогүй"; 
+        let currentQ = [], score = 0, qIdx = 0, isDirectTestMode = false; 
+        
+        let localSurveyQuestions = [];
+        // let currentSurveyIdx = 0; // currentQuestionIndex-ээр солигдсөн
+        // let surveyAnswers = { IT: 0, Science: 0, Engineering: 0, Humanities: 0, Business: 0, Art: 0 }; // userScores-ээр солигдсон
+        let selectedAnswersLog = [];
+        let introTriggered = false;
+        let isSavingProgress = false; // Олон дарагдаж давхардаж орохоос хамгаалах блок
+
+        const introSlides = [
+            { title: "Сайн байна уу? Тавтай морил! 👋", text: "CAREER.MN платформ нь 9-р ангийн сурагчдыг ирээдүйн зөв мэргэжлээ олоход нь туслах ухаалаг систем юм." },
+            { title: "Алхам 1: Мэргэжил Оношилгоо 🎯", text: "Та 15 асуулт бүхий сонирхол тодорхойлох сорилыг өгнө. Энэ нь таны ямар салбарт илүү давуу талтайг илрүүлнэ." },
+            { title: "Алхам 2: Түлхүүр Хичээлийн Тест 📝", text: "Оношилгооны дараа чиглэлийн дагуу 20 асуулт бүхий мэдлэгийн сорилыг шууд өгч, өөрийн түвшинг тодорхойлно." },
+            { title: "Алхам 3: Хувийн Зөвлөмж & Линкүүд 📊", text: "Үр дүнгээ харсны дараа систем танд тохирсон линкүүд болон мэргэжлийн зөвлөгөөнүүдийг дарааллын дагуу танилцуулах болно." }
+        ];
+        let currentIntroIdx = 0;
+
+        // Баганы нэрийг том жижиг үсэг, зай үл хамааран ухаалгаар хайх функц
+        const val = (obj, keys) => {
+          if (!obj) return '';
+          const objKeys = Object.keys(obj);
+          
+          // Эхлээд яг таг таарч байгаа түлхүүр үгийг хайна (Case-insensitive & Trimmed)
+          for (let key of keys) {
+            const found = objKeys.find(k => k.trim().toLowerCase() === key.trim().toLowerCase());
+            if (found && obj[found] !== undefined && obj[found] !== null) return String(obj[found]).trim();
+          }
+          
+          // Түлхүүр үг хэсэгчлэн орсон эсэхийг хайна (Жишээ нь: "Асуулт" гэдгийг "Асуултууд"-аас хайх)
+          for (let key of keys) {
+            const found = objKeys.find(k => k.trim().toLowerCase().includes(key.trim().toLowerCase()));
+            if (found && obj[found] !== undefined && obj[found] !== null) return String(obj[found]).trim();
+          }
+          return '';
+        };
+
+        async function nav(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('page-active'));
+            document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('nav-link-active'));
+            const activePage = document.getElementById(pageId);
+            if(activePage) activePage.classList.add('page-active');
+            const activeBtn = document.getElementById('nav-' + pageId);
+            if(activeBtn) activeBtn.classList.add('nav-link-active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modalOverlay');
+            const container = document.getElementById('modalContainer');
+            container.classList.remove('scale-100', 'opacity-100');
+            container.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => { overlay.style.display = 'none'; }, 200);
+        }
+
+        function openModalLayout(contentHtml, allowClose = false) {
+            document.getElementById('modalContent').innerHTML = contentHtml;
+            const closeBtn = document.getElementById('modalCloseBtn');
+            if(allowClose) closeBtn.classList.remove('hidden'); else closeBtn.classList.add('hidden');
+            
+            document.getElementById('modalOverlay').style.display = 'flex';
+            const container = document.getElementById('modalContainer');
+            container.classList.remove('scale-95', 'opacity-0');
+            container.classList.add('scale-100', 'opacity-100');
+        }
+
+        function runAutomaticIntro() {
+            if (introTriggered) return;
+            introTriggered = true;
+            currentIntroIdx = 0;
+            renderIntroGateSlide();
+        }
+
+        function renderIntroGateSlide() {
+            const slide = introSlides[currentIntroIdx];
+            const isLast = currentIntroIdx === introSlides.length - 1;
+
+            document.getElementById('gateContent').innerHTML = `
+                <div class="py-4">
+                    <span class="text-[11px] font-black text-indigo-600 uppercase tracking-widest block mb-2">Платформын Хөтөч (${currentIntroIdx + 1}/${introSlides.length})</span>
+                    <h3 class="text-2xl font-black text-indigo-950 mb-4 uppercase italic">${slide.title}</h3>
+                    <p class="text-slate-600 font-bold text-sm leading-relaxed bg-slate-50 p-6 rounded-2xl border mb-8">${slide.text}</p>
+                    <div class="flex gap-3 justify-center">
+                        ${currentIntroIdx > 0 ? `<button onclick="prevGateSlide()" class="px-5 py-3 bg-slate-100 text-slate-700 font-black rounded-xl text-xs uppercase">Өмнөх</button>` : ''}
+                        ${!isLast ? 
+                            `<button onclick="nextGateSlide()" class="px-8 py-3 bg-indigo-600 text-white font-black rounded-xl text-xs uppercase tracking-wider">Дараах ➔</button>` : 
+                            `<button onclick="breakGateAndStartSurvey()" class="px-8 py-4 bg-yellow-400 text-indigo-950 font-black rounded-xl text-sm uppercase tracking-wider shadow-lg animate-bounce">Нэвтрэх & Оношилгоо эхлэх 🎯</button>`
+                        }
+                    </div>
+                </div>`;
+        }
+
+        function nextGateSlide() { if(currentIntroIdx < introSlides.length - 1) { currentIntroIdx++; renderIntroGateSlide(); } }
+        function prevGateSlide() { if(currentIntroIdx > 0) { currentIntroIdx--; renderIntroGateSlide(); } }
+
+        function breakGateAndStartSurvey() {
+            document.getElementById('introGateOverlay').style.display = 'none';
+            startLocalSurvey();
+        }
+
+        function toggleChatbotWindow() { document.getElementById('chatbot-window').classList.toggle('hidden'); }
+
+        function sendChatbotMessage() {
+            const input = document.getElementById('chatbotInput');
+            const text = input.value.trim();
+            if(!text) return;
+
+            const msgBox = document.getElementById('chatbot-messages');
+            msgBox.innerHTML += `<div class="p-3 bg-slate-200 text-slate-900 rounded-2xl rounded-tr-none max-w-[85%] ml-auto text-right">${text}</div>`;
+            input.value = "";
+            msgBox.scrollTop = msgBox.scrollHeight;
+
+            setTimeout(() => {
+                let reply = "Уучлаарай, энэ чиглэлээр мэдээлэл олдсонгүй.";
+                const matched = allCareers.find(c => val(c, ['Мэргэжил', 'Нэр', 'Гарчиг']).toLowerCase().includes(text.toLowerCase()));
+                if(matched) {
+                    reply = `✨ **${val(matched, ['Мэргэжил', 'Нэр', 'Гарчиг'])}** мэргэжил олдлоо. Түлхүүр хичээл нь [${val(matched, ['Хичээлүүд', 'Хичээл'])}] чиглэлд хамаарна.`;
+                }
+                msgBox.innerHTML += `<div class="p-3 bg-indigo-50 rounded-2xl rounded-tl-none max-w-[85%]">${reply}</div>`;
+                msgBox.scrollTop = msgBox.scrollHeight;
+            }, 600);
+        }
+
+        function submitNewPostFromAdmin() {
+            const title = document.getElementById('adminTitle').value.trim();
+            const content = document.getElementById('adminContent').value.trim();
+            const fileInput = document.getElementById('adminImageFile');
+            const btn = document.getElementById('adminSubmitBtn');
+
+            if(!title || !content) { alert("Гарчиг болон агуулгыг оруулна уу!"); return; }
+
+            btn.disabled = true;
+            btn.textContent = "Түр хүлээнэ үү... ⌛";
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = async function(e) { await sendPostToSheet(title, content, e.target.result); };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                sendPostToSheet(title, content, "https://images.unsplash.com/photo-1454165833744-96e698836bd4?w=500");
+            }
+        }
+
+        async function sendPostToSheet(title, content, imgData) {
+            const btn = document.getElementById('adminSubmitBtn');
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        tab: "Мэдээ",
+                        data: { title: title, content: content, image: imgData }
+                    })
+                });
+                alert("Пост амжилттай хадгалагдлаа!");
+                document.getElementById('adminTitle').value = "";
+                document.getElementById('adminContent').value = "";
+                document.getElementById('adminImageFile').value = "";
+                nav('home');
+                init(); 
+            } catch(err) {
+                alert("Алдаа гарлаа.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Шудут Постлох 🚀";
+            }
+        }
+
+        async function init() {
+          try {
+            const get = tab => fetch(`${SCRIPT_URL}?tab=${encodeURIComponent(tab)}`).then(res => res.json()).catch(e => []);
+            const tabsToFetch = ['Мэргэжил', 'Оношилгоо', 'Багц зөвлөгөө', 'Тест', 'Холбоос', 'Коллеж МСҮТ', 'Мэргэжил хайлт', 'Тестийн үр дүн', 'Мэдээ', 'Ерөнхий зөвлөмж'];
+            const results = await Promise.all(tabsToFetch.map(tab => get(tab)));
+            allData = {};
+            tabsToFetch.forEach((tab, index) => { allData[tab] = Array.isArray(results[index]) ? results[index] : []; });
+            
+            allCareers = allData['Мэргэжил'] || allData['Мэргэжил хайлт'] || [];
+            tests = allData['Оношилгоо'] || allData['Тест'] || []; 
+            dynamicPosts = allData['Мэдээ'] || [];
+            allLinks = allData['Холбоос'] || [];
+            allPsychology = allData['Багц зөвлөгөө'] || allData['Зөвлөгөө'] || []; // allPsychology-г энд нэмсэн
+
+            console.log("Шийт дээрх бүх датаг амжилттай татлаа:", allData);
+
+            renderPosts(dynamicPosts); 
+            renderCareers(allCareers); 
+            renderColleges(allData['Коллеж МСҮТ'] || []); 
+            renderLinks(allLinks.filter(i => !(val(i, ['Нэр', 'Гарчиг']) || '').toLowerCase().includes('коллеж') && !(val(i, ['Нэр', 'Гарчиг']) || '').toLowerCase().includes('мсүт')));
+            renderPsychology(allPsychology);
+            buildDynamicSubjectButtons(); // Бүх 10 гаруй хичээлийн товчлуурыг автоматаар үүсгэх
+
+            runAutomaticIntro();
+          } catch (error) { 
+            console.error("Алдаа:", error); 
+            document.getElementById('gateContent').innerHTML = `<div class="py-8 text-center"><p class="text-red-500 font-black text-sm">Систем уншихад алдаа гарлаа: ${error.message}.</p><button onclick="location.reload()" class="mt-4 px-6 py-3 bg-red-600 text-white rounded-xl text-xs font-black uppercase">Дахин ачаалах</button></div>`;
+          }
+        }
+
+        // Тест хуудасны 10+ хичээлийн товчлууруудыг Sheet-ийн дата дээр тулгуурлан динамикаар үүсгэх
+        function buildDynamicSubjectButtons() {
+            const grid = document.getElementById('subjects-button-grid');
+            if(tests.length === 0) {
+                grid.innerHTML = "<p class='col-span-full text-slate-400 font-bold text-xs py-4'>Сорилын дата олдсонгүй.</p>";
+                return;
+            }
+            
+            // Бүх өвөрмөц хичээлүүдийн нэрийг ялгаж авах
+            let uniqueSubjects = [];
+            tests.forEach(t => {
+                let sName = val(t, ['Хичээл']);
+                if(sName && !uniqueSubjects.includes(sName)) {
+                    uniqueSubjects.push(sName);
+                }
+            });
+
+            if(uniqueSubjects.length === 0) {
+                uniqueSubjects = ['Математик', 'Физик', 'Хими', 'Биологи', 'Англи хэл', 'Түүх', 'Нийгэм', 'Газарзүй', 'Монгол хэл'];
+            }
+
+            const icons = {
+                'математик': '💻', 'физик': '⚙️', 'хими': '🔬', 'биологи': '🧬',
+                'нийгэм': '🤝', 'газарзүй': '🌍', 'англи хэл': '🔤', 'орос хэл': '🇷🇺',
+                'түүх': '📜', 'монгол хэл': '🇲🇳'
+            };
+
+            grid.innerHTML = uniqueSubjects.map(sub => {
+                let lower = sub.toLowerCase();
+                let icon = icons[lower] || '📝';
+                return `
+                    <button onclick="startDirectSubjectTest('${sub}')" class="p-5 bg-indigo-50 hover:bg-indigo-600 hover:text-white rounded-2xl font-black text-xs uppercase tracking-wider transition shadow-sm">
+                        ${icon} ${sub}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function renderPosts(data) {
+            if(!Array.isArray(data) || data.length === 0) return;
+            document.getElementById('posts-container').innerHTML = data.slice(0, 6).map(i => `
+                <div class="card-light rounded-[2rem] overflow-hidden flex flex-col h-full bg-white border">
+                    <img src="${val(i, ['Зураг']) || 'https://images.unsplash.com/photo-1454165833744-96e698836bd4?w=500'}" class="h-48 w-full object-cover">
+                    <div class="p-6">
+                        <h4 class="font-black text-base mb-3 text-indigo-950">${val(i, ['Гарчиг']) || 'Гарчиггүй'}</h4>
+                        <p class="text-slate-500 text-xs font-bold line-clamp-3">${val(i, ['Агуулга']) || ''}</p>
+                    </div>
+                </div>`).join('');
+        }
+
+        function renderCareers(data) {
+            const container = document.getElementById('careers-container');
+            if(!Array.isArray(data) || data.length === 0) {
+                container.innerHTML = "<p class='col-span-full text-center text-slate-400 font-bold'>Мэргэжил олдсонгүй.</p>";
+                return;
+            }
+            container.innerHTML = data.map((i, idx) => `
+                <div class="card-light p-6 rounded-[2rem] flex flex-col justify-between bg-white border">
+                    <div>
+                        <span class="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider">${val(i, ['Хичээлүүд', 'Хичээл']) || 'Ерөнхий'}</span>
+                        <h3 class="font-black text-indigo-950 text-base my-4 uppercase italic leading-tight">${val(i, ['Мэргэжил', 'Нэр', 'Гарчиг'])}</h3>
+                    </div>
+                    <button onclick="showDetails(${idx})" class="w-full py-3 bg-indigo-50 text-indigo-600 rounded-xl font-black text-[10px] uppercase hover:bg-indigo-600 hover:text-white transition">Дэлгэрэнгүй ✨</button>
+                </div>`).join('');
+        }
+
+        function showDetails(idx) {
+            const i = allCareers[idx]; if(!i) return;
+            openModalLayout(`
+                <div class="space-y-4 text-left">
+                    <h2 class="text-2xl font-black text-indigo-950 italic uppercase">${val(i, ['Мэргэжил', 'Нэр', 'Гарчиг'])}</h2>
+                    <p class="text-slate-600 font-bold text-sm bg-slate-50 p-6 rounded-3xl whitespace-pre-line leading-relaxed border">${val(i, ['Тайлбар', 'Агуулга']) || 'Дэлгэрэнгүй мэдээлэл байхгүй.'}</p>
+                </div>`, true);
+        }
+
+        function filterCareers() {
+            const subKey1 = document.getElementById('subjectSearch1').value.toLowerCase().trim();
+            const carKey = document.getElementById('careerSearch').value.toLowerCase().trim();
+            const filtered = allCareers.filter(i => {
+                const subject = (val(i, ['Хичээлүүд', 'Хичээл']) || '').toLowerCase();
+                const career = (val(i, ['Мэргэжил', 'Нэр', 'Гарчиг']) || '').toLowerCase();
+                return (subKey1 === "" || subject.includes(subKey1)) && career.includes(carKey);
+            });
+            renderCareers(filtered);
+        }
+
+        function startLocalSurvey() {
+            isSavingProgress = false; // Хуучин төлвийг чөлөөлөх
+            openModalLayout(`
+                <div class="text-center py-2">
+                    <span class="text-[10px] font-black text-indigo-600 uppercase tracking-widest block mb-1">Алхам 1: Сурагчийн бүртгэл</span>
+                    <h3 class="text-lg font-black text-indigo-950 mb-6 uppercase italic">Сургууль, Ангийн мэдээлэл</h3>
+                    <div class="space-y-4 max-w-sm mx-auto mb-6">
+                        <input type="text" id="regSchool" placeholder="Сургуулийн нэр..." class="w-full p-4 rounded-xl bg-slate-50 outline-none font-bold border">
+                        <input type="text" id="regClass" placeholder="Анги бүлэг (Жишээ нь: 9а)..." class="w-full p-4 rounded-xl bg-slate-50 outline-none font-bold border">
+                    </div>
+                    <button onclick="saveRegistrationAndStart()" id="modalSurveyInitBtn" class="btn-main w-full py-4 rounded-xl font-black uppercase text-xs tracking-wider">Оношилгоо эхлэх ➔</button>
+                </div>`, false);
+        }
+
+        async function saveRegistrationAndStart() {
+            const school = document.getElementById('regSchool').value.trim();
+            const className = document.getElementById('regClass').value.trim();
+            if(!school || !className) { alert("Мэдээллийг бүрэн оруулна уу!"); return; }
+
+            currentStudentSchool = school; currentStudentClass = className;
+            document.getElementById('dashStudentName').textContent = "Идэвхтэй Сурагч";
+            document.getElementById('dashStudentSchool').textContent = school;
+            document.getElementById('dashStudentClass').textContent = className;
+
+            document.getElementById('modalContent').innerHTML = `
+                <div id="quiz-card" class="text-left">
+                    <div class="mb-4">
+                        <span id="quiz-progress" class="text-[9px] font-black uppercase text-indigo-600 tracking-wider"></span>
+                    </div>
+                    <h3 id="quiz-question" class="text-base font-black text-indigo-950 mb-6"></h3>
+                    <div id="quiz-options" class="grid gap-2"></div>
+                </div>
+                <div id="result-card" class="hidden text-center py-4 space-y-6">
+                    <div class="text-center">
+                        <h3 class="text-lg font-black text-indigo-950 uppercase italic">Оношилгооны үр дүн</h3>
+                    </div>
+                    <div id="advice-container" class="space-y-4 mb-6"></div>
+                    <div id="links-container" class="space-y-2 mb-8"></div>
+                    <button onclick="isDirectTestMode=false; startSubjectTestFlow();" class="btn-main w-full py-4 rounded-xl font-black text-xs uppercase shadow-lg">Алхам 2: Хичээлийн тест эхлүүлэх ➔</button>
+                </div>`;
+            
+            currentQuestionIndex = 0;
+            userScores = {};
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+          const testData = allData['Оношилгоо'] || [];
+          if (testData.length === 0) {
+            document.getElementById('quiz-question').innerText = "Оношилгоо табаас дата олдсонгүй. Sheets-ээ шалгана уу.";
+            return;
+          }
+          const currentQ = testData[currentQuestionIndex];
+          let questionText = val(currentQ, ['Асуулт']);
+          if (!questionText || questionText.trim() === "") {
+            questionText = `Асуулт ${currentQuestionIndex + 1}`;
+          }
+          document.getElementById('quiz-progress').innerText = `МЭРГЭЖИЛ ОНОШИЛГОО (${currentQuestionIndex + 1} / ${testData.length})`;
+          document.getElementById('quiz-question').innerText = questionText;
+          const optionsContainer = document.getElementById('quiz-options');
+          optionsContainer.innerHTML = '';
+          const optionA = val(currentQ, ['Хувилбар1', 'Хувилбар 1']);
+          const optionB = val(currentQ, ['Хувилбар2', 'Хувилбар 2']);
+          const typeA = val(currentQ, ['Төрөл1', 'Төрөл 1']);
+          const typeB = val(currentQ, ['Төрөл2', 'Төрөл 2']);
+          if (optionA) createOptionButton(optionA, 'А', optionsContainer, typeA);
+          if (optionB) createOptionButton(optionB, 'Б', optionsContainer, typeB);
+        }
+
+        function createOptionButton(text, label, container, professionType) {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn text-xs flex items-center gap-3 group';
+          btn.innerHTML = `
+            <span class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-sm font-bold text-indigo-600 group-hover:bg-indigo-100 transition-colors">${label}</span>
+            <span class="text-slate-700 font-medium">${text}</span>
+          `;
+          btn.onclick = () => handleAnswer(professionType);
+          container.appendChild(btn);
+        }
+
+        function handleAnswer(professionType) {
+          const testData = allData['Оношилгоо'] || [];
+          if (professionType) {
+            const trimmedType = professionType.trim();
+            userScores[trimmedType] = (userScores[trimmedType] || 0) + 1;
+          }
+          if (currentQuestionIndex < testData.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion();
+          } else {
+            showResults();
+          }
+        }
+
+        function showResults() {
+          // Хуучин квиз цонхыг нууж, үр дүнгийн цонхыг гаргах
+          document.getElementById('quiz-card').classList.add('hidden');
+          document.getElementById('result-card').classList.remove('hidden');
+
+          // 1. Сурагчийн авсан нийт оноог тооцоолох
+          let totalScore = 0;
+          for (let key in userScores) { totalScore += userScores[key]; }
+
+          // 15 асуулттай тул онооны харьцааг тогтоох
+          let currentLevel = "Муу";
+          if (totalScore >= 12) currentLevel = "Сайн";
+          else if (totalScore >= 6) currentLevel = "Дунд";
+
+          const adviceData = allData['Багц зөвлөгөө'] || [];
+          const adviceContainer = document.getElementById('advice-container');
+          
+          if (adviceContainer) {
+            adviceContainer.innerHTML = '';
+            
+            // Sheets-ээс түвшинг хайх
+            const matchedAdvice = adviceData.find(item => {
+              const lv = val(item, ['Түвшин']);
+              return lv && lv.trim().toLowerCase() === currentLevel.toLowerCase();
+            });
+
+            // --- СТИКЭР КАРТ ҮҮСГЭХ ЛОГИК ---
+            let stickerHtml = '';
+            
+            if (matchedAdvice && val(matchedAdvice, ['Зураг', 'Стикэр', 'URL'])) {
+              // Хэрэв Sheets дээр зургийн линк байвал түүнийг нь харуулна
+              stickerHtml = `
+                <div class="flex justify-center my-6 animate-bounce">
+                  <img src="${val(matchedAdvice, ['Зураг', 'Стикэр', 'URL'])}" alt="Sticker" class="max-w-[260px] h-auto rounded-2xl shadow-xl border-4 border-white">
+                </div>`;
+            } else {
+              // Хэрэв Sheets-д зураг байхгүй бол стикэрүүдийн өнгө, текстийг автоматаар гоё карт болгож зурна!
+              if (currentLevel === "Сайн") {
+                stickerHtml = `
+                  <div class="max-w-[340px] mx-auto my-6 p-5 bg-gradient-to-r from-amber-50 to-orange-100 rounded-2xl shadow-lg border-2 border-amber-200 text-left relative overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                    <div class="absolute right-2 top-2 text-4xl opacity-20">❤️</div>
+                    <h4 class="font-black text-amber-900 text-lg mb-1">Чи онцгой бөгөөд хэнээр ч орлуулашгүй. ✨</h4>
+                    <p class="text-amber-800 text-xs font-medium leading-relaxed">Чамайг яг байгаагаар чинь хайрлаж, үнэлдэг хүмүүс үргэлж байдаг.</p>
+                  </div>`;
+              } else if (currentLevel === "Дунд") {
+                stickerHtml = `
+                  <div class="max-w-[340px] mx-auto my-6 p-5 bg-gradient-to-r from-sky-50 to-blue-100 rounded-2xl shadow-lg border-2 border-sky-200 text-left relative overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                    <div class="absolute right-4 top-2 text-4xl opacity-30 animate-pulse">🚀</div>
+                    <h4 class="font-black text-sky-900 text-lg mb-1">Одоо жаахан хэцүү санагдаж байж магадгүй,</h4>
+                    <p class="text-sky-800 text-xs font-medium leading-relaxed mb-2">гэхдээ чи өсөж, өдөр бүр илүү хүчтэй болж байна.</p>
+                    <div class="mt-2 py-1 px-2 bg-white/70 rounded-lg text-[11px] text-sky-700 font-bold flex items-center gap-1.5 border border-sky-100">
+                      <span>💙</span> Чиний гаргаж буй бүх хичээл зүтгэл үнэ цэнтэй.
+                    </div>
+                  </div>`;
+              } else {
+                stickerHtml = `
+                  <div class="max-w-[340px] mx-auto my-6 p-5 bg-gradient-to-r from-emerald-50 to-green-100 rounded-2xl shadow-lg border-2 border-emerald-200 text-left relative overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                    <div class="absolute right-4 top-2 text-4xl opacity-30">🌱</div>
+                    <h4 class="font-black text-emerald-900 text-lg mb-1">Алдаа гаргахаас бүү ай. 👍</h4>
+                    <p class="text-emerald-800 text-xs font-medium leading-relaxed mb-2">Хамгийн том амжилтууд алдаанаас эхэлдэг.</p>
+                    <div class="mt-2 py-1 px-2 bg-white/70 rounded-lg text-[11px] text-emerald-700 font-bold flex items-center gap-1.5 border border-emerald-100">
+                      <span>💚</span> Чиний дотор маш их боломж бий – үүндээ итгээрэй.
+                    </div>
+                  </div>`;
+              }
+            }
+
+            // Зөвлөмжийн гарчиг болон агуулгыг авах
+            const title = matchedAdvice ? val(matchedAdvice, ['Гарчиг', 'Мэргэжлийн чиглэл']) : 'Оношилгооны үр дүн';
+            const content = matchedAdvice ? val(matchedAdvice, ['Агуулга', 'Зөвлөмжүүд']) : 'Оноо цуглуулж дууслаа.';
+
+            // Үр дүнгийн текстийг Аккордион хэлбэрээр дэлгэцэнд хэвлэх
+            adviceContainer.innerHTML = `
+              ${stickerHtml}
+              <div class="p-3 bg-purple-50 rounded-2xl border border-purple-100 mb-4 text-left flex items-center justify-between">
+                <span class="text-xs font-bold text-purple-600 uppercase tracking-wide">Тестийн үнэлгээ</span>
+                <span class="text-xs font-black bg-purple-600 text-white px-2.5 py-1 rounded-full">${totalScore} / 15 Оноо</span>
+              </div>
+              <div class="border border-gray-100 rounded-2xl overflow-hidden bg-white shadow-sm mb-4">
+                <button onclick="toggleAccordion('advice-content-body')" class="w-full p-4 text-left font-bold text-gray-800 bg-gray-50 hover:bg-gray-100 flex justify-between items-center transition-colors">
+                  <span class="flex items-center gap-2">🎯 ${title}</span>
+                  <span id="icon-advice-content-body" class="text-xs text-gray-400">▼ Дарж унших</span>
+                </button>
+                <div id="advice-content-body" class="accordion-content p-4 text-sm text-gray-600 border-t border-gray-100 leading-relaxed text-left bg-white">
+                  <div class="pt-2">${content.replace(/\n/g, '<br>')}</div>
+                </div>
+              </div>
+            `;
+
+            // 2. "ЕРӨНХИЙ ЗӨВЛӨМЖ" ТАБААС МЭДЭЭЛЛИЙГ ЖАГСААЖ ХАРУУЛАХ СЕКЦ
+            const generalData = allData['Ерөнхий зөвлөмж'] || [];
+            if (generalData.length > 0) {
+              let generalHtml = `<div class="mt-8 text-left"><h4 class="font-extrabold text-gray-800 mb-3 text-base flex items-center gap-2">📋 Танд зориулсан ерөнхий зөвлөмжүүд:</h4>`;
+              
+              generalData.forEach((item, index) => {
+                const gTitle = val(item, ['Чиглэл', 'Гарчиг']);
+                const gContent = val(item, ['Зөвлөмж', 'Агуулга']);
+                
+                if (gTitle && gContent) {
+                  const accId = `gen-content-${index}`;
+                  generalHtml += `
+                    <div class="border border-gray-100 rounded-xl overflow-hidden bg-white shadow-xs mb-2.5">
+                      <button onclick="toggleAccordion('${accId}')" class="w-full p-3.5 text-left font-bold text-gray-700 bg-white hover:bg-gray-50 flex justify-between items-center text-sm transition-colors">
+                        <span class="text-purple-600 font-medium">🔹 ${gTitle}</span>
+                        <span id="icon-${accId}" class="text-xs text-gray-400">▼</span>
+                      </button>
+                      <div id="${accId}" class="accordion-content p-4 text-xs text-gray-600 border-t border-gray-100 leading-relaxed bg-slate-50/50">
+                        <div class="pt-1">${gContent.replace(/\n/g, '<br>')}</div>
+                      </div>
+                    </div>`;
+                }
+              });
+              
+              generalHtml += `</div>`;
+              adviceContainer.innerHTML += generalHtml;
+            }
+          }
+        }
+
+        function startDirectSubjectTest(subject) {
+            isDirectTestMode = true; activeSubjectKeyword = subject; startSubjectTestFlow();
+        }
+
+        function startSubjectTestFlow() {
+            isSavingProgress = false; // Төлвийг шинэчлэх
+            let filtered = tests.filter(t => (val(t, ['Хичээл']) || "").toLowerCase().includes(activeSubjectKeyword.toLowerCase()));
+            currentQ = filtered.slice(0, 20);
+            
+            if(currentQ.length === 0) {
+                currentQ = [];
+                for(let i=1; i<=20; i++) {
+                    currentQ.push({
+                        Асуулт: `${activeSubjectKeyword} хичээлийн жишиг сорил ${i}?`,
+                        Хувилбар1: "Зөв хариулт А", Хувилбар2: "Буруу хариулт Б", Хувилбар3: "Буруу хариулт В", Хувилбар4: "Буруу хариулт Г",
+                        Зөв: "Зөв хариулт А"
+                    });
+                }
+            }
+            score = 0; qIdx = 0; renderFlowQuestion();
+        }
+
+        function renderFlowQuestion() {
+            if (qIdx >= currentQ.length) { 
+                if(!isSavingProgress) {
+                    isSavingProgress = true;
+                    sendTestDataAndShowResult(); 
+                }
+                return; 
+            }
+            const q = currentQ[qIdx];
+            let questionText = val(q, ['Асуулт', 'Асуултууд', 'Асуултын текст']);
+            if (!questionText || questionText.trim() === "") {
+                questionText = `Сорилын асуулт ${qIdx + 1}`;
+            }
+
+            let options = [val(q, ['Хувилбар1', 'A']), val(q, ['Хувилбар2', 'B']), val(q, ['Хувилбар3', 'C']), val(q, ['Хувилбар4', 'D'])].filter(Boolean);
+            const badges = ['А', 'Б', 'В', 'Г'];
+
+            document.getElementById('modalContent').innerHTML = `
+                <div class="text-left">
+                    <div class="mb-4">
+                        <span class="text-[9px] font-black uppercase text-purple-600 tracking-wider">${activeSubjectKeyword} сорил (${qIdx + 1} / ${currentQ.length})</span>
+                    </div>
+                    <h3 class="text-base font-black text-indigo-950 mb-6">${questionText}</h3>
+                    <div class="grid gap-2">
+                        ${options.map((o, idx) => {
+                            const clearOpt = o.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+                            return `
+                            <button onclick="this.disabled=true; checkFlowAnswer('${clearOpt}')" class="option-btn text-xs flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-sm font-bold text-purple-600">${badges[idx]}</span> ${o}
+                            </button>`;
+                        }).join('')}
+                    </div>
+                </div>`;
+        }
+
+        function checkFlowAnswer(ans) {
+            if (ans.trim() === (val(currentQ[qIdx], ['Зөв']) || "").trim()) score++;
+            qIdx++; 
+            renderFlowQuestion();
+        }
+
+        async function sendTestDataAndShowResult() {
+            const startTime = Date.now();
+            document.getElementById('modalContent').innerHTML = `
+                <div class="text-center py-8 flex flex-col items-center justify-center space-y-3">
+                    <div class="spinner-custom"></div>
+                    <p class="text-indigo-950 font-black text-[10px] uppercase tracking-widest animate-pulse">Үр дүнг боловсруулж байна...</p>
+                </div>`;
+            
+            let totalQuestions = currentQ.length || 20;
+            let pct = Math.round((score / totalQuestions) * 100) || 0;
+            document.getElementById('dashTestScore').textContent = `${score}/${totalQuestions} (${pct}%)`;
+
+            let level = "";
+            if (score >= 16) { level = "Сайн 🌟"; } 
+            else if (score >= 9 && score <= 15) { level = "Дунд 📐"; } 
+            else { level = "Анхаарах 📈"; }
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        tab: "Тестийн үр дүн",
+                        data: {
+                            Сургууль: currentStudentSchool, 
+                            Анги: currentStudentClass, 
+                            Сурагчийн_Нэр: "Идэвхтэй Сурагч",
+                            Үндсэн_Хэв_Шинж: activeSubjectKeyword + " сорил",
+                            Авсан_Оноо: `${totalQuestions}-аас ${score}`, 
+                            Дүгнэлт: level + " (" + pct + "%)",
+                            Хариултууд: "Бүрэн бөглөсөн"
+                        }
+                    })
+                });
+            } catch (e) { console.error(e); }
+            
+            // Хэрэглэгчийн хүсэлтийн дагуу ЗААВАЛ 2 секунд (эсвэл үлдсэн хугацаа) хүлээлгэнэ
+            const elapsedTime = Date.now() - startTime;
+            const remainingTime = Math.max(0, 2000 - elapsedTime);
+
+            setTimeout(() => {
+                document.getElementById('modalContent').innerHTML = `
+                    <div class="text-center py-4">
+                        <div class="mb-4 inline-flex items-center justify-center w-16 h-16 bg-green-50 text-green-500 rounded-full text-2xl">✅</div>
+                        <span class="text-[10px] font-black text-indigo-500 tracking-widest block mb-1">Тестийн нэгдсэн дүн</span>
+                        <h2 class="text-3xl font-black text-indigo-900 mb-2">${score} оноо - ${level}</h2>
+                        <p class="text-xs text-slate-500 font-bold mb-8">Нийт ${totalQuestions} асуултаас ${pct}% амжилттай гүйцэтгэлээ.</p>
+                        <div class="space-y-3">
+                            <button onclick="showFinalFlowData()" class="btn-main w-full py-4 rounded-xl font-black text-xs uppercase shadow-indigo-200">Алхам 3: Танд тохирох Линк & Зөвлөмж харах ➔</button>
+                        </div>
+                    </div>`;
+            }, remainingTime);
+        }
+
+        // Зөвлөгөө болон линкүүдийг зөв харуулдаг болгож шинэчилсэн функц
+        function showFinalFlowData() {
+            let linksHtml = allLinks.slice(0, 4).map(i => `
+                <div class="p-3 bg-slate-50 rounded-xl border flex justify-between items-center text-left">
+                    <span class="font-bold text-xs text-indigo-950">🔗 ${val(i, ['Нэр', 'Гарчиг', 'Мэргэжил'])}</span>
+                    <a href="${val(i, ['Линк', 'Холбоос', 'URL'])}" target="_blank" class="px-3 py-1 bg-indigo-600 text-white text-[10px] font-black rounded-lg">Үзэх</a>
+                </div>`).join('');
+
+            // Одоогийн чиглэлд таарах зөвлөгөөг шүүж гаргах (Хоосон чийдэн гарах алдааг зассан)
+            let matchedPsych = allPsychology.filter(p => {
+                let cat = (val(p, ['Гарчиг', 'Чиглэл', 'категори', 'Асуулт']) || '').toLowerCase();
+                let currentTitleLower = detectedCareerTitle.toLowerCase();
+                return cat.includes(currentTitleLower) || currentTitleLower.includes(cat) || cat === '' || cat.includes(activeSubjectKeyword.toLowerCase());
+            });
+
+            if(matchedPsych.length === 0) matchedPsych = allPsychology.slice(0, 3);
+
+            let psychHtml = matchedPsych.map((i, idx) => `
+                <div class="p-4 bg-purple-50/50 rounded-xl border border-purple-100 text-left">
+                    <h4 onclick="toggleAccordion('modal-psych-${idx}')" class="font-black text-xs text-indigo-950 cursor-pointer select-none flex justify-between items-center">
+                        <span>💡 ${val(i, ['Гарчиг', 'Асуулт', 'Мэргэжил', 'Чиглэл', 'категори']) || 'Мэргэжлийн зөвлөмж'}</span>
+                        <span id="icon-modal-psych-${idx}" class="text-[10px] text-indigo-600 font-bold whitespace-nowrap ml-2">Дэлгэх 🔽</span>
+                    </h4>
+                    <div id="modal-psych-${idx}" class="accordion-content text-slate-600 font-bold text-xs">
+                        <div class="pt-3 whitespace-pre-line border-t border-purple-100/50 mt-2 text-slate-700 bg-white p-3 rounded-xl mt-2">${val(i, ['Агуулга', 'Зөвлөмж', 'Тайлбар'])}</div>
+                    </div>
+                </div>`).join('');
+
+            document.getElementById('modalContent').innerHTML = `
+                <div class="space-y-6 max-h-[75vh] overflow-y-auto pr-2">
+                    <div class="text-center">
+                        <h3 class="text-lg font-black text-indigo-950 uppercase italic">Танд санал болгож буй нөөцүүд</h3>
+                        <p class="text-[10px] text-slate-400 font-bold mt-1">Оношилгоо амжилттай дууслаа.</p>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <span class="text-[9px] font-black uppercase text-indigo-500 tracking-wider block">📍 Хэрэгцээт линкүүд:</span>
+                        ${linksHtml || '<p class="text-xs font-bold text-slate-400">Одоогоор линк оруулаагүй байна.</p>'}
+                    </div>
+
+                    <div class="space-y-2">
+                        <span class="text-[9px] font-black uppercase text-purple-600 tracking-wider block">🧠 Танд зориулсан зөвлөгөө (Дарж уншина уу):</span>
+                        ${psychHtml || '<p class="text-xs font-bold text-slate-400">Одоогоор зөвлөгөө оруулаагүй байна.</p>'}
+                    </div>
+
+                    <button onclick="closeModal(); document.getElementById('introGateOverlay').style.display='none';" class="btn-main w-full py-4 rounded-xl font-black text-xs uppercase tracking-wider shadow-lg">Вэб рүү шууд нэвтрэх (Бүх функц нээлттэй) 🚀</button>
+                </div>`;
+        }
+
+        function renderColleges(data) {
+            const container = document.getElementById('colleges-container');
+            if(!data || data.length === 0) {
+                container.innerHTML = '<p class="text-xs font-bold text-slate-400 p-4 bg-white rounded-2xl text-center col-span-full">Одоогоор коллежийн мэдээлэл оруулаагүй байна.</p>';
+                return;
+            }
+            container.innerHTML = data.map(i => `
+                <div class="card-light p-6 bg-white border text-left flex flex-col justify-between">
+                    <div class="font-black text-indigo-950 text-base mb-4">🛠️ ${val(i, ['Гарчиг', 'Нэр'])}</div>
+                    <a href="${val(i, ['Линк']) || '#'}" target="_blank" class="text-center block py-2 bg-yellow-400 text-indigo-950 font-black rounded-xl text-xs shadow-sm">Зочлох</a>
+                </div>`).join('');
+        }
+
+        function renderLinks(data) {
+            const container = document.getElementById('links-container');
+            if(!data || data.length === 0) {
+                container.innerHTML = '<p class="text-xs font-bold text-slate-400 p-4 bg-white rounded-2xl text-center col-span-full">Одоогоор холбоос оруулаагүй байна.</p>';
+                return;
+            }
+            container.innerHTML = data.map(i => `
+                <div class="card-light p-4 bg-white border flex justify-between items-center text-left">
+                    <div><span class="font-black text-indigo-950 text-sm">🏫 ${val(i, ['Нэр', 'Гарчиг'])}</span></div>
+                    <a href="${val(i, ['Линк']) || '#'}" target="_blank" class="px-4 py-2 bg-indigo-600 text-white font-black text-xs rounded-xl whitespace-nowrap ml-2">Үзэх ➔</a>
+                </div>`).join('');
+        }
+
+        function renderPsychology(data) {
+            const container = document.getElementById('psychology-container');
+            if(!Array.isArray(data) || data.length === 0) {
+                container.innerHTML = '<p class="text-xs font-bold text-slate-400 p-4 bg-white rounded-2xl text-center">Одоогоор зөвлөгөө оруулаагүй байна.</p>';
+                return;
+            }
+            container.innerHTML = data.map((i, idx) => `
+                <div class="card-light bg-white border border-slate-100 rounded-2xl overflow-hidden mb-3">
+                    <div onclick="toggleAccordion('psych-${idx}')" class="p-5 flex justify-between items-center bg-gradient-to-r from-slate-50 to-white cursor-pointer select-none hover:from-indigo-50/50 transition-all">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-xl">✨</span>
+                            <h4 class="font-black text-sm md:text-base text-indigo-950 uppercase italic tracking-tight">
+                                ${val(i, ['Гарчиг', 'Асуулт', 'Чиглэл', 'категори']) || 'Ерөнхий зөвлөмж'}
+                            </h4>
+                        </div>
+                        <span id="icon-psych-${idx}" class="px-3 py-1 bg-indigo-50 text-indigo-600 font-extrabold text-[10px] rounded-full uppercase tracking-wider whitespace-nowrap">Дэлгэх 🔽</span>
+                    </div>
+                    <div id="psych-${idx}" class="accordion-content text-slate-600 font-bold text-xs md:text-sm bg-white">
+                        <div class="p-6 whitespace-pre-line leading-relaxed border-t border-slate-100 text-slate-700 bg-slate-50/50">
+                            ${val(i, ['Агуулга', 'Зөвлөмж', 'Тайлбар'])}
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            if(!content) return;
+            
+            if(content.classList.contains('open')) { 
+                content.classList.remove('open'); 
+                if(icon) icon.textContent = "Дэлгэх 🔽"; 
+            } else { 
+                content.classList.add('open'); 
+                if(icon) icon.textContent = "Хураах 🔼"; 
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
